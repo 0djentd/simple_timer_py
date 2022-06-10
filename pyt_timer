@@ -1,0 +1,45 @@
+#!/bin/python
+
+"""Simple timer.
+"""
+
+import time
+import dataclasses
+import argparse
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+
+@dataclasses.dataclass
+class Timer():
+    name: str
+    seconds: int
+
+    @classmethod
+    def from_settings(cls, settings):
+        obj = cls(seconds=settings.timer, name=settings.timer_name)
+        return obj
+
+
+def get_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-t', '--timer', required=True, type=int, help="Seconds")
+    parser.add_argument('-n', '--timer-name', required=False, default="New timer", type=str, help="Timer name")
+    settings = parser.parse_args()
+    return settings
+
+def show_timer(timer: Timer) -> None:
+    seconds = timer.seconds
+    for x in range(seconds):
+        time.sleep(1)
+        print(f"{seconds - x} seconds left to {timer.name}.")
+    print(f"{timer.name}!!!")
+    return
+
+
+if __name__ == "__main__":
+    settings = get_args()
+    timer = Timer.from_settings(settings)
+    show_timer(timer)
